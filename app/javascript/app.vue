@@ -1,7 +1,9 @@
 <template>
-  <div id="app">
-    <p>{{ message }}</p>
-  </div>
+<div id="app">
+  <p>{{ message }}</p>
+  <el-button>Default</el-button>
+</div>
+
 </template>
 
 <script>
@@ -12,7 +14,10 @@ export default {
     }
   }
 }
+
 </script>
+
+
 
 <style scoped>
 p {
