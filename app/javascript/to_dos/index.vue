@@ -1,40 +1,52 @@
 <template>
   <div id="app">
-    <el-table
-      :data="toDos"
-      style="width: 100%">
-        <el-table-column
-        prop="finished">
-        <template v-slot="scope">
-          <el-checkbox
-            v-model="scope.row.finished"></el-checkbox>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="title">
-      </el-table-column>
-      <el-table-column
-       width="120">
-        <template v-slot="scope">
-          <el-button
-            @click="destroyToDo(scope.row.id)"
-            type="danger"
-            icon="el-icon-delete"
-            circle></el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row>
+      <el-button
+        icon="el-icon-plus"
+        @click="createToDoDialog = true"
+        circle></el-button>
+      <el-col :span="12" :offset="6">
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="ToDo" name="toDo">
+            <to-do-table
+              v-bind:to-dos="filter(toDos, false)"
+              @update="updateToDo"
+              @destroy="destroyToDo"></to-do-table>
+          </el-tab-pane>
+          <el-tab-pane label="終了したToDo" name="finishedToDo">
+            <to-do-table v-bind:to-dos="filter(toDos, true)"></to-do-table>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
+    <el-dialog
+    :visible.sync="createToDoDialog"
+    width="30%"
+    center>
+      <to-do-form
+      @close="closeDialog"
+      @add="addToDo"></to-do-form>
+    </el-dialog>
   </div>
 </template>
 
+
 <script>
+import ToDoForm from '../to_dos/to-do-form'
+import ToDoTable from '../to_dos/to-do-table'
 import axios from 'axios'
-import {reject} from 'lodash';
+import {reject,filter} from 'lodash';
   export default {
     data() {
       return {
-        toDos: []
+        toDos: [],
+        activeName: 'toDo',
+        createToDoDialog: false
       }
+    },
+    components: {
+      ToDoTable,
+      ToDoForm
     },
     created() {
       axios.get('/api/v1/to_dos')
@@ -50,7 +62,24 @@ import {reject} from 'lodash';
           this.toDos = reject(this.toDos, ['id', id]);
         }
       });
-  }
+    },
+    updateToDo(id, finished) {
+      axios.patch('/api/v1/to_dos/' + id, {to_do: {finished: finished}})
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res)
+        }
+      })
+    },
+    filter(toDos, finished) {
+      return filter(toDos, ['finished', finished])
+    },
+    closeDialog() {
+      this.createToDoDialog = false
+    },
+    addToDo(toDo) {
+      this.toDos.push(toDo)
+    }
   } 
 }
 </script>
