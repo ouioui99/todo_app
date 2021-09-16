@@ -1,7 +1,8 @@
 <template>
   <el-table
     :data="toDos"
-    style="width: 100%">
+    style="width: 100%"
+    @cell-dblclick="showInput">
     <el-table-column
       prop="finished">
       <template v-slot="scope">
@@ -12,9 +13,15 @@
     </el-table-column>
 
 
-    <el-table-column
-      prop="title">
-    </el-table-column>
+   <el-table-column
+     prop="title">
+     <template v-slot="scope">
+       <div>{{ scope.row.title }}</div>
+       <el-input
+         class="hidden"
+         v-model="scope.row.title"></el-input>
+     </template>
+   </el-table-column>
 
     <el-table-column
       prop="expired_at">
@@ -36,7 +43,26 @@
 <script>
 
   export default {
-    props: ['toDos']
+    props: ['toDos'],
+    methods: {
+      showInput(row, column, cell, event) {
+        let children = cell.firstElementChild.children
+        children[0].classList.add('hidden')
+        children[1].classList.remove('hidden')
+
+        let input = children[1].firstElementChild
+        input.focus()
+
+      }
+    }
   }
 
+  
+
 </script>
+
+<style scoped>
+ .hidden {
+   display: none;
+ }
+</style>

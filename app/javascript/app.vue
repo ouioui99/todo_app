@@ -35,18 +35,18 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        toDo: {
-          csrfToken: document.getElementsByName('csrf-token')[0].content,
-          title: '',
-          expiredAt: '',
-          action: '/to_dos'
-        }
+export default {
+  data() {
+    return {
+      toDo: {
+        csrfToken: document.getElementsByName('csrf-token')[0].content,
+        title: '',
+        expiredAt: '',
+        action: '/to_dos'
       }
     }
   }
+}
 </script>
 
 

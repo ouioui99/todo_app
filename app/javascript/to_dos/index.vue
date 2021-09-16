@@ -36,33 +36,34 @@ import ToDoForm from '../to_dos/to-do-form'
 import ToDoTable from '../to_dos/to-do-table'
 import axios from 'axios'
 import {reject,filter} from 'lodash';
-  export default {
-    data() {
-      return {
-        toDos: [],
-        activeName: 'toDo',
-        createToDoDialog: false
+
+export default {
+  data() {
+    return {
+      toDos: [],
+      activeName: 'toDo',
+      createToDoDialog: false
+    }
+  },
+  components: {
+    ToDoTable,
+    ToDoForm
+  },
+  created() {
+    axios.get('/api/v1/to_dos')
+    .then(res => {
+      this.toDos = res.data
+    })
+  },
+  methods: {
+   destroyToDo(id) {
+    axios.delete('/api/v1/to_dos/' + id)
+    .then(res => {
+      if (res.status === 200) {
+        this.toDos = reject(this.toDos, ['id', id]);
       }
-    },
-    components: {
-      ToDoTable,
-      ToDoForm
-    },
-    created() {
-      axios.get('/api/v1/to_dos')
-      .then(res => {
-        this.toDos = res.data
-      })
-    },
-    methods: {
-     destroyToDo(id) {
-      axios.delete('/api/v1/to_dos/' + id)
-      .then(res => {
-        if (res.status === 200) {
-          this.toDos = reject(this.toDos, ['id', id]);
-        }
-      });
-    },
+    });
+  },
     updateToDo(id, finished) {
       axios.patch('/api/v1/to_dos/' + id, {to_do: {finished: finished}})
       .then(res => {
