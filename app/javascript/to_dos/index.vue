@@ -37,6 +37,7 @@ import ToDoTable from '../to_dos/to-do-table'
 import axios from 'axios'
 import {reject,filter} from 'lodash';
 
+
 export default {
   data() {
     return {
@@ -64,8 +65,8 @@ export default {
       }
     });
   },
-    updateToDo(id, finished) {
-      axios.patch('/api/v1/to_dos/' + id, {to_do: {finished: finished}})
+    updateToDo(toDo) {
+      axios.patch('/api/v1/to_dos/' + toDo.id, {to_do: toDo})
       .then(res => {
         if (res.status === 200) {
           console.log(res)
